@@ -1,3 +1,8 @@
+Si se queda congelado en el botón de "Toca para iniciar" y no avanza, suele pasar por dos razones:
+ * El reproductor de Spotify integrado: A veces los navegadores de algunos celulares o entornos bloquean el reproductor oculto si no tiene los permisos listos, lo que frena el código justo al hacer clic.
+ * Conflicto con la música: Si quitamos el reproductor y usamos un archivo de audio directo o dejamos la animación limpia, corre de inmediato sin trabarse.
+Para solucionarlo de golpe y que la animación de Alejandra, la luna, la chica, el camino y los fuegos artificiales corran perfectos y fluidos, aquí tienes la versión limpia a prueba de fallos.
+Cópialo y reemplaza todo en tu archivo de Replit:
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -11,7 +16,7 @@
         #btn-iniciar {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
             color: white; border: 2px solid #ff4081; padding: 15px 30px;
-            background: rgba(0,0,0,0.8); cursor: pointer; z-index: 100;
+            background: rgba(0,0,0,0.9); cursor: pointer; z-index: 100;
             font-family: sans-serif; font-weight: bold; font-size: 18px;
             border-radius: 30px; box-shadow: 0 0 20px rgba(255,64,129,0.5);
         }
@@ -69,7 +74,7 @@
         }
         @keyframes parpadeo { 0%, 100% { opacity: 0.2; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); } }
 
-        /* ESTRELLAS FUGACES TIPO CINE */
+        /* ESTRELLAS FUGACES */
         .fugaz {
             position: absolute; height: 2px;
             background: linear-gradient(90deg, rgba(255,255,255,1), transparent);
@@ -81,11 +86,6 @@
 
     <button id="btn-iniciar">TOCA PARA INICIAR ❤️</button>
     
-    <!-- AUDIO SPOTIFY / WIDGET DE AMOR -->
-    <div style="display:none;">
-        <iframe id="spotify-audio" src="https://open.spotify.com/embed/track/3n3Ppam7vgaVa1iaRUc9Lp?autoplay=1" width="300" height="80" frameborder="0" allow="encrypted-media"></iframe>
-    </div>
-
     <div id="luna"></div>
     <div id="foco-luna"></div>
     <div id="escenario"></div>
@@ -101,3 +101,145 @@
     <canvas id="fuegos-canvas" style="position:fixed; top:0; left:0; pointer-events:none; z-index:15;"></canvas>
 
     <script>
+        const btn = document.getElementById('btn-iniciar');
+        const chica = document.getElementById('chica-wrapper');
+        const luna = document.getElementById('luna');
+        const foco = document.getElementById('foco-luna');
+        const corazon = document.getElementById('corazon');
+        const canvas = document.getElementById('fuegos-canvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Crear Estrellas y Pasto inicial
+        for(let i=0; i<100; i++) {
+            const s = document.createElement('div');
+            s.className = 'estrella';
+            s.style.left = Math.random()*100+'vw';
+            s.style.top = Math.random()*100+'vh';
+            s.style.width = s.style.height = (Math.random()*4+2)+'px';
+            s.style.animationDelay = Math.random()*3+'s';
+            document.body.appendChild(s);
+
+            const h = document.createElement('div');
+            h.className = 'hierba';
+            h.style.left = Math.random()*100+'vw';
+            document.getElementById('escenario').appendChild(h);
+        }
+
+        // Crear flores amarillas en el suelo
+        for(let i=0; i<8; i++) {
+            const f = document.createElement('div');
+            f.className = 'flor';
+            f.style.left = (20 + i*8) + 'vw';
+            f.style.bottom = (15 + (Math.random()*3)) + '%';
+            document.body.appendChild(f);
+        }
+
+        function lanzarFugaz() {
+            const f = document.createElement('div');
+            f.className = 'fugaz';
+            f.style.width = (Math.random()*150 + 50) + 'px';
+            f.style.top = Math.random()*40 + 'vh';
+            f.style.left = '-200px';
+            document.body.appendChild(f);
+            
+            let pos = -200;
+            function move() {
+                pos += 12;
+                f.style.left = pos + 'px';
+                f.style.transform = `rotate(25deg)`;
+                if(pos < window.innerWidth + 200) requestAnimationFrame(move);
+                else f.remove();
+            }
+            move();
+        }
+
+        // Fuegos Artificiales estilo caricatura
+        let particles = [];
+        function createFirework(x, y) {
+            const colors = ['#ff0055', '#ffeb3b', '#ff00ff', '#00fbff', '#ff5722'];
+            const color = colors[Math.floor(Math.random()*colors.length)];
+            for(let i=0; i<35; i++) {
+                particles.push({
+                    x: x, y: y,
+                    vx: Math.cos(i) * Math.random()*7,
+                    vy: Math.sin(i) * Math.random()*7,
+                    life: 1, color: color,
+                    size: Math.random()*3 + 2
+                });
+            }
+        }
+
+        function drawFireworks() {
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            particles.forEach((p, i) => {
+                p.x += p.vx; p.y += p.vy;
+                p.vy += 0.12;
+                p.life -= 0.015;
+                ctx.fillStyle = p.color;
+                ctx.globalAlpha = p.life;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+                ctx.fill();
+                if(p.life <= 0) particles.splice(i, 1);
+            });
+            requestAnimationFrame(drawFireworks);
+        }
+
+        btn.addEventListener('click', () => {
+            btn.style.display = 'none';
+            drawFireworks();
+
+            // Secuencia 1: Alejandra camina
+            let posX = -100;
+            chica.classList.add('caminando');
+            
+            let intervalo = setInterval(() => {
+                posX += 2;
+                chica.style.left = posX + 'px';
+
+                if(posX >= window.innerWidth / 2 - 40) {
+                    clearInterval(intervalo);
+                    chica.classList.remove('caminando');
+                    
+                    // Secuencia 2: Aparece la Luna y el foco la ilumina
+                    setTimeout(() => {
+                        luna.style.top = '10%';
+                        setTimeout(() => {
+                            foco.style.opacity = '1';
+                            foco.style.background = `radial-gradient(circle at ${posX + 35}px 70%, rgba(255,255,255,0.25) 0%, transparent 45%)`;
+                            
+                            // Secuencia 3: Sigue caminando hacia el corazón
+                            setTimeout(() => {
+                                chica.classList.add('caminando');
+                                let intervalo2 = setInterval(() => {
+                                    posX += 2;
+                                    chica.style.left = posX + 'px';
+                                    foco.style.background = `radial-gradient(circle at ${posX + 35}px 70%, rgba(255,255,255,0.25) 0%, transparent 45%)`;
+                                    
+                                    if(posX >= window.innerWidth * 0.65) {
+                                        clearInterval(intervalo2);
+                                        chica.classList.remove('caminando');
+                                        corazon.style.opacity = '1';
+                                        corazon.style.transform = 'scale(1.5)';
+
+                                        // Gran Final: Fuegos artificiales
+                                        setTimeout(() => {
+                                            setInterval(() => {
+                                                createFirework(Math.random()*canvas.width, Math.random()*canvas.height*0.5);
+                                            }, 600);
+                                            setInterval(lanzarFugaz, 1800);
+                                        }, 1000);
+                                    }
+                                }, 20);
+                            }, 1500);
+                        }, 2000);
+                    }, 1000);
+                }
+            }, 20);
+        });
+    </script>
+</body>
+</html>
