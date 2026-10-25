@@ -2,148 +2,102 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para Alejandra ✨</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Para Alejandra ❤️ - Nuestra Galaxia</title>
     <style>
-        body, html {
-            margin: 0; padding: 0;
-            width: 100%; height: 100%;
-            display: flex; justify-content: center; align-items: center;
-            background-color: #fce4ec; /* Rosa inicial */
-            font-family: 'Arial', sans-serif;
-            overflow: hidden;
-            transition: background 2s;
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; overflow: hidden; }
+        
+        /* BOTÓN DE INICIO */
+        #btn-iniciar {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            color: white; border: 2px solid #ff4081; padding: 15px 30px;
+            background: rgba(0,0,0,0.8); cursor: pointer; z-index: 100;
+            font-family: sans-serif; font-weight: bold; font-size: 18px;
+            border-radius: 30px; box-shadow: 0 0 20px rgba(255,64,129,0.5);
         }
 
-        /* FONDO GALAXIA PROFUNDA */
-        #galaxy {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, #1b2735 0%, #000 100%);
-            display: none; z-index: -1;
+        /* LUNA Y FOCO */
+        #luna {
+            position: absolute; top: -150px; right: 10%; width: 120px; height: 120px;
+            background: #fff; border-radius: 50%; 
+            box-shadow: 0 0 60px #fff, 0 0 120px #4d94ff;
+            transition: top 3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 2;
+        }
+        #foco-luna {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.15) 0%, transparent 60%);
+            opacity: 0; transition: opacity 2s; z-index: 4; pointer-events: none;
         }
 
-        .star {
-            position: absolute; background: white; border-radius: 50%;
-            animation: fall 2s linear infinite;
+        /* ESCENARIO: PASTO Y CAMINO */
+        #escenario {
+            position: absolute; bottom: 0; width: 100%; height: 20%;
+            background: linear-gradient(to bottom, #051a05 0%, #000 100%);
+            z-index: 5;
+        }
+        .hierba {
+            position: absolute; bottom: 100%; width: 2px; height: 10px;
+            background: #0a2f0a; border-radius: 2px;
         }
 
-        @keyframes fall {
-            from { transform: translateY(-10vh); opacity: 1; }
-            to { transform: translateY(110vh); opacity: 0; }
+        /* CHICA ANIME (SVG INTERNO) */
+        #chica-wrapper {
+            position: absolute; bottom: 15%; left: -100px; width: 70px;
+            z-index: 10; transition: left 0.1s linear;
+        }
+        .caminando { animation: balanceo 0.6s infinite ease-in-out; }
+        @keyframes balanceo { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
+
+        /* FLORES AMARILLAS */
+        .flor {
+            position: absolute; width: 10px; height: 10px; background: #ffeb3b;
+            border-radius: 50%; box-shadow: 0 0 10px #ffeb3b; z-index: 6;
         }
 
-        #container { text-align: center; width: 100%; z-index: 10; }
-        .item { display: none; }
-
-        /* IMAGEN DE FLORES REALES */
-        .flores-reales {
-            width: 250px; /* Tamaño grande */
-            filter: drop-shadow(0 0 20px rgba(255, 192, 203, 0.8));
-            animation: float 3s ease-in-out infinite;
+        /* CORAZÓN MÁGICO */
+        #corazon {
+            position: absolute; bottom: 32%; right: 15%; font-size: 50px;
+            opacity: 0; transform: scale(0.5); transition: all 1s ease;
+            filter: drop-shadow(0 0 20px #ff0000); z-index: 10;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
+        /* ESTRELLAS DE 4 PUNTAS */
+        .estrella {
+            position: absolute; background: white;
+            clip-path: polygon(50% 0%, 54% 46%, 100% 50%, 54% 54%, 50% 100%, 46% 54%, 0% 50%, 46% 46%);
+            animation: parpadeo 3s infinite;
         }
+        @keyframes parpadeo { 0%, 100% { opacity: 0.2; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); } }
 
-        /* ZOOM DEL CORAZÓN */
-        .zoom-final {
-            animation: zoomIn 1.5s forwards, heartbeat 0.8s infinite 1.5s;
+        /* ESTRELLAS FUGACES TIPO CINE */
+        .fugaz {
+            position: absolute; height: 2px;
+            background: linear-gradient(90deg, rgba(255,255,255,1), transparent);
+            filter: drop-shadow(0 0 8px white); pointer-events: none; z-index: 3;
         }
-
-        @keyframes zoomIn {
-            0% { transform: scale(0); opacity: 0; }
-            100% { transform: scale(3.5); opacity: 1; }
-        }
-
-        @keyframes heartbeat {
-            0%, 100% { transform: scale(3.5); }
-            50% { transform: scale(3.8); }
-        }
-
-        #btn-next {
-            background: #ff4081; color: white; border: none;
-            padding: 15px 35px; border-radius: 50px; font-size: 20px;
-            font-weight: bold; cursor: pointer; margin-top: 40px;
-            box-shadow: 0 4px 15px rgba(255, 64, 129, 0.5);
-            transition: 0.3s;
-        }
-
-        .texto { color: #ad1457; font-size: 28px; font-weight: bold; margin-top: 20px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
-        .texto-final { color: white; font-size: 14px; margin-top: 40px; letter-spacing: 3px; font-weight: 100; opacity: 0.8; }
     </style>
 </head>
 <body>
 
-    <div id="galaxy"></div>
-
-    <div id="container">
-        <div id="s1" class="item">
-            <div style="font-size: 100px; animation: float 3s infinite;">🎁</div>
-        </div>
-        
-        <div id="s2" class="item">
-            <img src="https://i.ibb.co/Vp6qH8S/flowers-aesthetic.png" class="flores-reales" alt="Flores para Leslie">
-            <div style="font-size: 50px; margin-top: -30px;">🍫</div>
-            <div class="texto">Eres la mejor</div>
-        </div>
-
-        <div id="s3" class="item">
-            <div id="heart" style="font-size: 80px; color: #ff1744; filter: drop-shadow(0 0 20px #ff0000);">❤️</div>
-            <div class="texto-final" id="t-final">¡HERMOSA ALEJANDRA! ❤️</div>
-        </div>
-
-        <button id="btn-next">Toca aquí</button>
+    <button id="btn-iniciar">TOCA PARA INICIAR ❤️</button>
+    
+    <!-- AUDIO SPOTIFY / WIDGET DE AMOR -->
+    <div style="display:none;">
+        <iframe id="spotify-audio" src="https://open.spotify.com/embed/track/3n3Ppam7vgaVa1iaRUc9Lp?autoplay=1" width="300" height="80" frameborder="0" allow="encrypted-media"></iframe>
     </div>
 
-    <audio id="player">
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-    </audio>
+    <div id="luna"></div>
+    <div id="foco-luna"></div>
+    <div id="escenario"></div>
+    <div id="corazon">❤️</div>
+
+    <div id="chica-wrapper">
+        <svg viewBox="0 0 100 200" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 20 Q40 20 35 40 Q30 60 35 80 L30 150 L45 150 L48 180 L52 180 L55 150 L70 150 L65 80 Q70 60 65 40 Q60 20 50 20" fill="#111"/>
+            <path d="M35 40 Q50 35 65 40 Q70 70 50 75 Q30 70 35 40" fill="#050505"/>
+        </svg>
+    </div>
+
+    <canvas id="fuegos-canvas" style="position:fixed; top:0; left:0; pointer-events:none; z-index:15;"></canvas>
 
     <script>
-        let paso = 0;
-        const btn = document.getElementById('btn-next');
-        const player = document.getElementById('player');
-
-        function generarEstrellas() {
-            const g = document.getElementById('galaxy');
-            for(let i=0; i<80; i++) {
-                let s = document.createElement('div');
-                s.className = 'star';
-                s.style.width = s.style.height = Math.random()*3+'px';
-                s.style.left = Math.random()*100+'vw';
-                s.style.animationDuration = (Math.random()*1.5 + 0.5)+'s';
-                g.appendChild(s);
-            }
-        }
-
-        btn.onclick = function() {
-            paso++;
-            player.play().catch(() => {});
-
-            if(paso === 1) {
-                document.getElementById('s1').style.display = 'block';
-                btn.innerText = '¿Qué tiene dentro?';
-            }
-            else if(paso === 2) {
-                document.getElementById('s1').style.display = 'none';
-                document.getElementById('s2').style.display = 'block';
-                btn.innerText = 'Falta algo...';
-            }
-            else if(paso === 3) {
-                document.getElementById('s2').style.display = 'none';
-                document.getElementById('s3').style.display = 'block';
-                document.getElementById('heart').classList.add('zoom-final');
-                
-                // ACTIVAR GALAXIA
-                document.getElementById('galaxy').style.display = 'block';
-                document.body.style.background = '#000';
-                generarEstrellas();
-                
-                btn.style.display = 'none';
-            }
-        };
-    </script>
-</body>
-</html>
